@@ -1,18 +1,20 @@
+import TypingBox from "./Components/TypingBox";
 import { GlobalStyles } from "./Styles/global";
 
+var randomWords = require('random-words');
 
 function App() {
-  return (
-    <div className="App">
-      <GlobalStyles/>
-      <h1 className="heading">typing</h1>
-      <div>
-        <div className='something'>
-          
-        </div>
-      
-      </div>
 
+  const words = randomWords(100);
+
+
+  return (
+    <div className="canvas">
+
+      <GlobalStyles/>
+      <h1 style={{"text-align":'center'}}>Typing Test</h1>
+      <TypingBox words={words}/>
+      <h1 style={{"text-align":'center'}}>Footer</h1>
     </div>
   );
 }
