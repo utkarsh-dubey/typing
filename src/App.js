@@ -12,9 +12,9 @@ function App() {
     <div className="canvas">
 
       <GlobalStyles/>
-      <h1 style={{"text-align":'center'}}>Typing Test</h1>
+      <h1 style={{"textAlign":'center'}}>Typing Test</h1>
       <TypingBox words={words}/>
-      <h1 style={{"text-align":'center'}}>Footer</h1>
+      <h1 style={{"textAlign":'center'}}>Footer</h1>
     </div>
   );
 }
