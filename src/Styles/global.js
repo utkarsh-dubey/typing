@@ -86,6 +86,58 @@ body{
     }
 }
 
+.upper-menu{
+    display:flex;
+    max-width:1000px;
+    margin-left:auto;
+    margin-right:auto;
+    justify-content: space-between;
+    font-size: 20px;
+    padding:1rem;
+}
 
+.time-modes{
+    display:flex;
+}
+
+.counter{
+    cursor:none;
+}
+
+.time{
+    margin-right: 15px;
+}
+
+.time:hover{
+    color: yellow;
+    cursor: pointer;
+}
+
+.stats-box{
+    display:flex;
+    max-width:1000px;
+    height:auto;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.title{
+    font-size:20x;
+    color:grey;
+}
+
+.subtitle{
+    font-size:30px;
+    color:gold;
+}
+
+.left-stats{
+    width:30%;
+    padding:30px;
+}
+
+.right-stats{
+    width:70%;
+}
 
 `;
