@@ -1,30 +1,50 @@
 import React, { useState } from 'react'
 import { Box, Button, TextField } from '@material-ui/core'
 import { auth } from '../firebaseConfig';
+import errorMapping from '../Utils/errorMessages';
+import { useAlert } from '../Context/AlertContext';
+import { useTheme } from '../Context/ThemeContext';
 
 const SignupForm = ({handleClose}) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
+    const {setAlert} = useAlert();
+    const {theme} = useTheme();
+
     const handleSubmit = ()=>{
         if(!email || !password || !confirmPassword){
-            alert("Enter all details");
+            setAlert({
+                open: true,
+                type: 'warning',
+                message: 'Please enter all details'
+            });
             return;
         }
 
         if(password!==confirmPassword){
-            alert("Password mismatch");
+            setAlert({
+                open: true,
+                type: 'warning',
+                message: 'Password Mismatch'
+            });
             return;
         }
 
         auth.createUserWithEmailAndPassword(email,password).then((ok)=>{
-            alert("user created");
+            setAlert({
+                open: true,
+                type: 'success',
+                message: 'Account created'
+            });
             handleClose();
         }).catch((err)=>{
-            console.log(err);
-            alert("not able to create account");
+            setAlert({
+                open: true,
+                type: 'error',
+                message: errorMapping[err.code] || "Some error occured"
+            });
         });
 
     }
@@ -36,7 +56,7 @@ const SignupForm = ({handleClose}) => {
             display:'flex',
             flexDirection:'column',
             gap:'20px',
-            backgroundColor:'white',
+            backgroundColor:'transparent',
             padding:10
         }}    
     >
@@ -45,6 +65,18 @@ const SignupForm = ({handleClose}) => {
             type='email'
             label='Enter Email'
             onChange={(e)=>setEmail(e.target.value)}
+            InputLabelProps={
+                {
+                    style:{
+                        color: theme.title
+                    }
+                }
+            }
+            InputProps={{
+                style:{
+                    color: theme.title
+                }
+            }}
         >
         
         </TextField>
@@ -52,20 +84,44 @@ const SignupForm = ({handleClose}) => {
             variant='outlined'
             type='password'
             label='Enter password'
-            onChange={(e)=>setPassword(e.target.value)}>
-        
+            onChange={(e)=>setPassword(e.target.value)}
+            InputLabelProps={
+                {
+                    style:{
+                        color: theme.title
+                    }
+                }
+            }
+            InputProps={{
+                style:{
+                    color: theme.title
+                }
+            }}>
+
         </TextField>
         <TextField
             variant='outlined'
             type='password'
             label='Confirm password'
-            onChange={(e)=>setConfirmPassword(e.target.value)}>
+            onChange={(e)=>setConfirmPassword(e.target.value)}
+            InputLabelProps={
+                {
+                    style:{
+                        color: theme.title
+                    }
+                }
+            }
+            InputProps={{
+                style:{
+                    color: theme.title
+                }
+            }}>
         
         </TextField>
         <Button
         variant='contained'
         size='large'
-        style={{backgroundColor:'red'}}
+        style={{backgroundColor:theme.title, color: theme.background}}
         onClick={handleSubmit}>
             Signup
         </Button>

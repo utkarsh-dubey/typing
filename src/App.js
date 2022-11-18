@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
+import Alert from "./Components/Alert";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import TypingBox from "./Components/TypingBox";
@@ -11,10 +12,13 @@ import { GlobalStyles } from "./Styles/global";
 
 function App() {
   return (
+    <>
+    <Alert/>
     <Routes>
       <Route path='/' element={<HomePage/>}></Route>
       <Route path='/user' element={<UserPage/>}></Route>
     </Routes>   
+    </> 
   );
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { AppBar, Modal, Tab, Tabs } from '@mui/material';
+import { AppBar, Box, Modal, Tab, Tabs } from '@mui/material';
 import { useState } from 'react';
 import { makeStyles } from '@material-ui/core';
 import LoginForm from './LoginForm';
@@ -9,15 +9,23 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { auth } from '../firebaseConfig';
 import {useAuthState} from 'react-firebase-hooks/auth';
 import { useNavigate } from 'react-router-dom';
+import GoogleButton from 'react-google-button';
+import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { useAlert } from '../Context/AlertContext';
+import { useTheme } from '../Context/ThemeContext';
+
 
 const useStyles = makeStyles(()=>({
     modal: {
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        backdropFilter: 'blur(2px)'
     },
     box: {
-        width: 400
+        width: 400,
+        textAlign: 'center',
+        border: '1px solid'
     }
 }))
 
@@ -44,6 +52,8 @@ const AccountIcon = () => {
     }  
     const [user] = useAuthState(auth);
 
+    const {theme} = useTheme();
+
     const handleAccountIconClick = ()=>{
 
         if(user){
@@ -55,9 +65,31 @@ const AccountIcon = () => {
 
     }
 
+    const {setAlert} = useAlert();
+    const googleProvider = new GoogleAuthProvider();
+
+
+    const signInWithGoogle = ()=>{
+        signInWithPopup(auth, googleProvider).then((res)=>{
+            setAlert({
+                open: true,
+                type: 'success',
+                message: 'Logged in'
+            });
+            handleClose();
+        }).catch((err)=>{
+            setAlert({
+                open: true,
+                type: 'error',
+                message: 'not able to use google authentication'
+            });
+        });
+    }
+
+
+
     const classes = useStyles();
-    
-    console.log(user);
+
 
   return (
     <div>
@@ -78,13 +110,22 @@ const AccountIcon = () => {
                     onChange = {handleValueChange}
                     variant='fullWidth'
                 >
-                    <Tab label='login' style={{color:'white'}}></Tab>
-                    <Tab label='signup' style={{color:'white'}}></Tab>
+                    <Tab label='login' style={{color:theme.title}}></Tab>
+                    <Tab label='signup' style={{color:theme.title}}></Tab>
                 </Tabs>
             </AppBar>
-
+            
             {value===0 && <LoginForm handleClose={handleClose}/>}
             {value===1 && <SignupForm handleClose={handleClose}/>}
+
+            <Box>
+                <span style={{display:'block',padding:'1rem'}}>OR</span>
+                <GoogleButton
+                    style={{width:'100%'}}
+                    onClick = {signInWithGoogle}
+                />
+            </Box>
+
             </div>
             
 
