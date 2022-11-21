@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { useAlert } from '../Context/AlertContext';
+import { auth, db } from '../firebaseConfig';
 import Graph from './Graph'
 
 const Stats = ({wpm,accuracy,graphData,correctChars,incorrectChars,extraChars, missedChars}) => {
 
+  const [user] = useAuthState(auth);
+  const {setAlert} = useAlert();
   var timeSet = new Set(); //set only stores unique values 
   const newGraph = graphData.filter((i)=>{
     if(!timeSet.has(i[0])){
@@ -10,6 +15,50 @@ const Stats = ({wpm,accuracy,graphData,correctChars,incorrectChars,extraChars, m
       return i;
     }
   });
+
+  const pushResultsToDB = async()=>{
+    const resultsRef = db.collection('Results');
+    const {uid} = auth.currentUser;
+    if(!isNaN(accuracy)){
+        //push results  to db
+        await resultsRef.add({
+            userId: uid,
+            wpm: wpm,
+            accuracy: accuracy,
+            characters: `${correctChars}/${incorrectChars}/${missedChars}/${extraChars}`,
+            timeStamp: new Date()
+        }).then((res)=>{
+          setAlert({
+            open: true,
+            type: 'success',
+            message: 'result saved to db'
+          });
+        });
+    }
+    else{
+      setAlert({
+        open: true,
+        type: 'error',
+        message: 'invalid test'
+      });
+    }
+
+
+  }
+
+  useEffect(()=>{
+    if(user){
+      pushResultsToDB();
+    }
+    else{
+      setAlert({
+        open: true,
+        type: 'warning',
+        message: 'login to save results!'
+      });
+    }
+  },[]);
+
 
   return (
     <div className="stats-box">

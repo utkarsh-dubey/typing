@@ -34,6 +34,8 @@ const AccountIcon = () => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(0);
 
+    const {setAlert} = useAlert();
+
     const handleValueChange = (e,v)=>{
         setValue(v);
     }
@@ -45,9 +47,17 @@ const AccountIcon = () => {
 
     const logout = ()=>{
         auth.signOut().then((ok)=>{
-            alert("Logged out");
+            setAlert({
+                open: true,
+                type: 'success',
+                message: 'logged out'
+            })
         }).catch((err)=>{
-            alert("Not able to logout");
+            setAlert({
+                open: true,
+                type: 'error',
+                message: 'not able to logout'
+            })
         });
     }  
     const [user] = useAuthState(auth);
@@ -64,8 +74,6 @@ const AccountIcon = () => {
         }
 
     }
-
-    const {setAlert} = useAlert();
     const googleProvider = new GoogleAuthProvider();
 
 

@@ -25,7 +25,7 @@ ChartJS.register(
 
 
 
-const Graph = ({graphData}) => {
+const Graph = ({graphData,type}) => {
 
     const {theme} = useTheme();
 
@@ -35,7 +35,7 @@ const Graph = ({graphData}) => {
         <Line
             data={
                 {
-                    labels: graphData.map(i=>i[0]+1),
+                    labels: graphData.map(i=>(type==='date')?(i[0].toDate().toLocaleString()):(i[0]+1)),
                     datasets: [
                         {
                             data: graphData.map(i=>i[1]),
