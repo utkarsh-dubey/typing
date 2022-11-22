@@ -7,10 +7,18 @@ var randomWords = require('random-words');
 
 const TypingBox = ({}) => {
 
-
+    const {testTime, testMode, testWords} = useTestMode();
+    console.log(typeof(testTime), typeof(testWords));
     const [currWordIndex, setCurrWordIndex] = useState(0);
     const [currCharIndex, setCurrCharIndex] = useState(0);
-    const [countDown, setCountDown] = useState(15);
+    const [countDown, setCountDown] = useState(()=>{
+        if(testMode==='words'){
+            return 180;
+        }
+        else{
+            return testTime;
+        }
+    });
     const [testStart, setTestStart] = useState(false);
     const [testOver, setTestOver] = useState(false);
     const [intervalId, setIntervalId] = useState(null);
@@ -21,6 +29,9 @@ const TypingBox = ({}) => {
     const [missedChars, setMissedChars] = useState(0);
     const [graphData, setGraphData] = useState([]);
     const [wordsArray, setWordsArray] = useState(()=>{
+        if(testMode === 'words'){
+            return randomWords(testWords);
+        }
         return randomWords(100);
     });
 
@@ -41,7 +52,7 @@ const TypingBox = ({}) => {
         wordSpanRef[0].current.childNodes[0].className = 'char current';
     }
 
-    const {testTime} = useTestMode();
+    
 
     const inputTextRef = useRef(null);
     // console.log(Array(5));
@@ -68,7 +79,9 @@ const TypingBox = ({}) => {
 
                 setCorrectChars((correctChars)=>{
                     setGraphData((data)=>{
-                        return [...data,[testTime-prevCountDown,Math.round((correctChars/5)/((testTime-prevCountDown+1)/60))]];
+
+                        const startTime = (testMode==='words')?180:testTime;
+                        return [...data,[startTime-prevCountDown,Math.round((correctChars/5)/((startTime-prevCountDown+1)/60))]];
                     });
                     return correctChars;
                 });
@@ -100,6 +113,14 @@ const TypingBox = ({}) => {
         
         //logic space
         if(e.keyCode===32){
+
+            //game over logic for word mode
+            if(currWordIndex===wordsArray.length-1){
+                clearInterval(intervalId);
+                setTestOver(true);
+                return;
+            }
+
 
             const correctChar = wordSpanRef[currWordIndex].current.querySelectorAll('.correct');
             const incorrectChar = wordSpanRef[currWordIndex].current.querySelectorAll('.incorrect');
@@ -187,8 +208,10 @@ const TypingBox = ({}) => {
     
     }
 
+    
+
     const calculateWPM = ()=>{
-        return Math.round((correctChars/5)/(testTime/60));
+        return Math.round((correctChars/5)/((graphData[graphData.length-1][0]+1)/60));
     }
 
     const calculateAccuracy = ()=>{
@@ -203,8 +226,15 @@ const TypingBox = ({}) => {
         setTestOver(false);
         clearInterval(intervalId);
         setCountDown(testTime);
-        let random = randomWords(100);
-        setWordsArray(random);
+        if(testMode === 'words'){
+            let random = randomWords(testWords);
+            setWordsArray(random);
+            setCountDown(180);
+        }
+        else{
+            let random = randomWords(100);
+            setWordsArray(random);
+        }
         resetWordSpanRefClassNames();
 
     }
@@ -215,7 +245,7 @@ const TypingBox = ({}) => {
 
     useEffect(()=>{
         resetTest();
-    },[testTime]);
+    },[testTime,testMode,testWords])
 
     useEffect(()=>{
         focusInput();

@@ -7,18 +7,15 @@ import { useTheme } from '../Context/ThemeContext'
 import { GlobalStyles } from '../Styles/global'
 
 const HomePage = () => {
-    
+
     const {theme} = useTheme();
   
     return (
-    <ThemeProvider theme={theme}>
       <div className="canvas">
-        <GlobalStyles/>
         <Header/>
         <TypingBox/>
         <Footer/>
       </div>
-    </ThemeProvider>
   )
 }
 

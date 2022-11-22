@@ -11,14 +11,16 @@ import UserPage from "./Pages/UserPage";
 import { GlobalStyles } from "./Styles/global";
 
 function App() {
+  const {theme} = useTheme();
   return (
-    <>
-    <Alert/>
-    <Routes>
-      <Route path='/' element={<HomePage/>}></Route>
-      <Route path='/user' element={<UserPage/>}></Route>
-    </Routes>   
-    </> 
+    <ThemeProvider theme={theme}>
+        <GlobalStyles/>
+        <Alert/>
+        <Routes>
+          <Route path='/' element={<HomePage/>}></Route>
+          <Route path='/user' element={<UserPage/>}></Route>
+        </Routes>   
+    </ThemeProvider>
   );
 }
 
