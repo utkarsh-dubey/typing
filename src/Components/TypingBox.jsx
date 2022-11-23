@@ -1,3 +1,4 @@
+import { Dialog, DialogTitle } from '@material-ui/core';
 import React, { createRef, useEffect, useMemo, useRef, useState } from 'react'
 import { useTestMode } from '../Context/TestMode';
 import Stats from './Stats';
@@ -8,7 +9,6 @@ var randomWords = require('random-words');
 const TypingBox = ({}) => {
 
     const {testTime, testMode, testWords} = useTestMode();
-    console.log(typeof(testTime), typeof(testWords));
     const [currWordIndex, setCurrWordIndex] = useState(0);
     const [currCharIndex, setCurrCharIndex] = useState(0);
     const [countDown, setCountDown] = useState(()=>{
@@ -28,6 +28,7 @@ const TypingBox = ({}) => {
     const [extraChars, setExtraChars] = useState(0);
     const [missedChars, setMissedChars] = useState(0);
     const [graphData, setGraphData] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
     const [wordsArray, setWordsArray] = useState(()=>{
         if(testMode === 'words'){
             return randomWords(testWords);
@@ -52,7 +53,49 @@ const TypingBox = ({}) => {
         wordSpanRef[0].current.childNodes[0].className = 'char current';
     }
 
-    
+    const handleDialogEvents = (e)=>{
+        // the key down logic of dialog box will go
+
+        // logic for space
+        if(e.keyCode===32){
+            e.preventDefault();
+            redoTest();
+            setOpenDialog(false);
+            return;
+        }
+
+        //logic for tab/enter
+        if(e.keyCode===9 || e.keyCode===13){
+            e.preventDefault();
+            resetTest();
+            setOpenDialog(false);
+            return;
+        }
+
+        e.preventDefault();
+        setOpenDialog(false);
+        startTimer();
+    }
+
+
+    const redoTest = ()=>{
+        setCurrCharIndex(0);
+        setCurrWordIndex(0);
+        setTestStart(false);
+        setTestOver(false);
+        clearInterval(intervalId);
+        setCountDown(testTime);
+        if(testMode === 'words'){
+            setCountDown(180);
+        }
+        setGraphData([]);
+        setCorrectChars(0);
+        setIncorrectChars(0);
+        setCorrectWords(0);
+        setMissedChars(0);
+        setExtraChars(0);
+        resetWordSpanRefClassNames();
+    }
 
     const inputTextRef = useRef(null);
     // console.log(Array(5));
@@ -102,6 +145,19 @@ const TypingBox = ({}) => {
 
 
     const handleKeyDown = (e)=>{
+
+        console.log(e.keyCode);
+
+        //logic for tab
+        if(e.keyCode===9){
+            if(testStart){
+                clearInterval(intervalId);
+            }
+            e.preventDefault();
+            setOpenDialog(true);
+            return;
+        }
+
 
         if(!testStart){
             startTimer();
@@ -235,6 +291,12 @@ const TypingBox = ({}) => {
             let random = randomWords(100);
             setWordsArray(random);
         }
+        setGraphData([]);
+        setCorrectChars(0);
+        setIncorrectChars(0);
+        setCorrectWords(0);
+        setMissedChars(0);
+        setExtraChars(0);
         resetWordSpanRefClassNames();
 
     }
@@ -255,9 +317,9 @@ const TypingBox = ({}) => {
   return (
     <div>
         
-        {testOver?(<Stats wpm={calculateWPM()} accuracy={calculateAccuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} extraChars={extraChars} missedChars={missedChars}/>):(
+        {testOver?(<Stats resetTest={resetTest} wpm={calculateWPM()} accuracy={calculateAccuracy()} graphData={graphData} correctChars={correctChars} incorrectChars={incorrectChars} extraChars={extraChars} missedChars={missedChars}/>):(
             <>
-                <UpperMenu countDown={countDown}/>
+                <UpperMenu countDown={countDown} currWordIndex={currWordIndex}/>
             <div className="type-box" onClick={focusInput}>
             <div className="words">
                 {/* spans of words and chars */}
@@ -281,6 +343,33 @@ const TypingBox = ({}) => {
             ref={inputTextRef}
             onKeyDown={((e)=>handleKeyDown(e))}
         />
+
+        <Dialog
+            PaperProps={{
+                style: {
+                    backgroundColor: 'transparent',
+                    boxShadow: 'none'
+                }
+            }}
+            open={openDialog}
+            onKeyDown={handleDialogEvents}
+            style={{
+                backdropFilter: 'blur(2px)'
+            }}
+        >
+            <DialogTitle
+            >
+                <div className="instruction">
+                    press Space to redo
+                </div>
+                <div className="instruction">
+                    pres Tab/Enter to restart
+                </div>
+                <div className="instruction">
+                    press any other key to exit
+                </div>
+            </DialogTitle>
+        </Dialog>
 
     </div>
   )

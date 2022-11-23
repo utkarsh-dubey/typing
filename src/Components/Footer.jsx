@@ -15,21 +15,33 @@ const Footer = () => {
 
   return (
     <div className='footer'>
-        <div className="footer-links">
-            Links
+        <div className="instructions">
+            <div className="hint">
+                press <kbd>Tab</kbd> to open commands
+            </div>
         </div>
-        <div className="theme-options">
-            <Select 
-                options={themeOptions}
-                menuPlacement='top'
-                onChange = {handleThemeChange}
-                defaultValue={{value:defaultTheme,label:defaultTheme.label}}
-                styles={{
-                    control: (styles)=>({...styles,backgroundColor:theme.background}),
-                    menu: (styles)=>({...styles,backgroundColor: theme.background})
-                }}
-            />
+
+        <div className="actual-footer">
+
+            <div className="footer-links">
+                Links
+            </div>
+            <div className="theme-options">
+                <Select 
+                    options={themeOptions}
+                    menuPlacement='top'
+                    onChange = {handleThemeChange}
+                    defaultValue={{value:defaultTheme,label:defaultTheme.label}}
+                    styles={{
+                        control: (styles)=>({...styles,backgroundColor:theme.background}),
+                        menu: (styles)=>({...styles,backgroundColor: theme.background})
+                    }}
+                />
+            </div>
+
         </div>
+
+        
     </div>
   )
 }
