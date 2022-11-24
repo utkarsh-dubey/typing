@@ -59,9 +59,16 @@ const UserPage = () => {
                 <div className="picture">
                     <AccountCircleIcon style={{display:'block', transform:'scale(6)', margin:'auto', marginTop: '3.5rem'}} />
                 </div>
-                <div className="info">
-                    <div className="email">
+                <div className="info" >
+                    <div className="email"
+                     style={{width:'auto'}}
+                     >
+                       
+
                         {user.email}
+                    
+                      
+                        
                     </div>
                     <div className="joined-on">
                         {user.metadata.creationTime}
@@ -129,3 +136,11 @@ const UserPage = () => {
 }
 
 export default UserPage
+
+
+
+// fetch all the result data from firestore
+// put all of it in an array
+// make a Map, (mapping will be from uid to result object)
+// loop over the array and check if the uid is present in map, if it is present then check that result.wpm<i.wpm, change the result object
+ 

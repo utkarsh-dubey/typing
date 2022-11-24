@@ -193,9 +193,13 @@ const TypingBox = ({}) => {
             else{
                 allChildrenSpans[currCharIndex].className = allChildrenSpans[currCharIndex].className.replace('current','');
             }
-
+            
             //add cursor to the next word
             wordSpanRef[currWordIndex+1].current.childNodes[0].className = 'char current';
+
+            if(currWordIndex!=0 && wordSpanRef[currWordIndex+1].current.offsetLeft < wordSpanRef[currWordIndex].current.offsetLeft){
+                wordSpanRef[currWordIndex].current.scrollIntoView();
+            }
 
             setCurrWordIndex(currWordIndex+1);
             setCurrCharIndex(0);

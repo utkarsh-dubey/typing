@@ -211,11 +211,11 @@ body::-webkit-scrollbar {
 }
 
 .picture{
-    width:50%;
+    width:40%;
 }
 
 .info{
-    width: 50%;
+    width: 60%;
     margin-top: 1rem;
     font-size: 1.5rem;
     text-align: center;
